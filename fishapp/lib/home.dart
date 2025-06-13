@@ -1,3 +1,4 @@
+import 'package:fishapp/ResultScreen.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
@@ -68,11 +69,7 @@ class Home extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      Icons.photo_library,
-                      size: 48,
-                      color: Colors.grey,
-                    ),
+                    Icon(Icons.photo_library, size: 48, color: Colors.grey),
                     SizedBox(height: 8),
                     Text(
                       'No image selected',
@@ -118,7 +115,20 @@ class Home extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => ResultScreen(
+                            speciesName: 'Thalkossa',
+                            scientificName: 'Belontiasignata',
+                            confidenceScore: 0.912,
+                            imagePath: null, // Or pass image path if available
+                          ),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: primaryColor,
                   padding: const EdgeInsets.symmetric(vertical: 16),
