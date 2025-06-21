@@ -1,8 +1,101 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:fishapp/ResultScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'ResultScreen.dart';
 
-class Home extends StatelessWidget {
-  const Home({super.key});
+class Home extends StatefulWidget {
+  const Home({Key? key}) : super(key: key);
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  // static const primaryColor = Color(0xFF001F59);
+  File? _image;
+
+  Future<void> _pickImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(source: source);
+
+    if (picked != null) {
+      setState(() {
+        _image = File(picked.path);
+      });
+    }
+  }
+
+  Future<void> _uploadImage(BuildContext context) async {
+    if (_image == null) return;
+
+    //open show dialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+              Color(0xFF001F59),
+            ), // Primary color
+            strokeWidth: 4.0,
+          ),
+        );
+      },
+    );
+
+    try {
+      final request = http.MultipartRequest(
+        'POST',
+        Uri.parse('http://192.168.1.189:8000/predict/'), // Use my device IP
+      );
+      request.files.add(
+        await http.MultipartFile.fromPath('image', _image!.path),
+      );
+      final response = await request.send();
+      final responseStr = await response.stream.bytesToString();
+      final jsonResp = json.decode(responseStr);
+
+      // Close the loading dialog before navigating
+      Navigator.of(context).pop();
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (_) => ResultScreen(
+                speciesName: jsonResp['prediction'],
+                scientificName: '', // Optional
+                confidenceScore: jsonResp['confidence'] ?? 0.90,
+                imagePath: jsonResp['heatmap'],
+              ),
+        ),
+      );
+    } catch (e) {
+      // Close loading dialog
+      Navigator.of(context).pop();
+
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Error'),
+            content: Text('Failed to classify the species.\n\n$e'),
+            actions: [
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,26 +158,40 @@ class Home extends StatelessWidget {
                 border: Border.all(color: Colors.grey.shade400),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.photo_library, size: 48, color: Colors.grey),
-                    SizedBox(height: 8),
-                    Text(
-                      'No image selected',
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  ],
-                ),
-              ),
+              child:
+                  _image == null
+                      ? const Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.photo_library,
+                              size: 48,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              'No image selected',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      )
+                      : ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(
+                          _image!,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
             ),
             const SizedBox(height: 24),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () => _pickImage(ImageSource.camera),
                   icon: const Icon(Icons.camera_alt),
                   label: const Text('Camera'),
                   style: ElevatedButton.styleFrom(
@@ -97,7 +204,7 @@ class Home extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () => _pickImage(ImageSource.gallery),
                   icon: const Icon(Icons.photo_library),
                   label: const Text('Gallery'),
                   style: ElevatedButton.styleFrom(
@@ -116,21 +223,30 @@ class Home extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder:
-                          (context) => ResultScreen(
-                            speciesName: 'Thalkossa',
-                            scientificName: 'Belontiasignata',
-                            confidenceScore: 0.912,
-                            imagePath: null, // Or pass image path if available
+                  if (_image != null) {
+                    _uploadImage(context);
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: const Text('No Image Selected'),
+                          content: const Text(
+                            'Please select an image before classifying.',
                           ),
-                    ),
-                  );
+                          actions: [
+                            TextButton(
+                              child: const Text('OK'),
+                              onPressed: () => Navigator.of(context).pop(),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  }
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryColor,
+                  backgroundColor: Color(0xFF001F59),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
