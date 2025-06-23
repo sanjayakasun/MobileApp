@@ -68,9 +68,10 @@ class _HomeState extends State<Home> {
           builder:
               (_) => ResultScreen(
                 speciesName: jsonResp['prediction'],
-                scientificName: '', // Optional
+                scientificName: '',
                 confidenceScore: jsonResp['confidence'] ?? 0.90,
-                imagePath: jsonResp['heatmap'],
+                imageUrl:
+                    "http://192.168.1.189:8000${jsonResp['heatmap_image']}",
               ),
         ),
       );

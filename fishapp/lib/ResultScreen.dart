@@ -6,14 +6,14 @@ class ResultScreen extends StatelessWidget {
   final String speciesName;
   final String scientificName;
   final double confidenceScore;
-  final String? imagePath; // Optional: if you want to show the selected image
+  final String imageUrl; // Optional: if you want to show the selected image
 
   const ResultScreen({
     Key? key,
     required this.speciesName,
     required this.scientificName,
     required this.confidenceScore,
-    this.imagePath,
+    required this.imageUrl,
   }) : super(key: key);
 
   @override
@@ -55,15 +55,25 @@ class ResultScreen extends StatelessWidget {
                 border: Border.all(color: Colors.grey.shade400),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child:
-                  imagePath != null
-                      ? ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: Image.file(File(imagePath!), fit: BoxFit.cover),
-                      )
-                      : const Center(
-                        child: Icon(Icons.image, size: 60, color: Colors.grey),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.network(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(child: CircularProgressIndicator());
+                  },
+                  errorBuilder:
+                      (context, error, stackTrace) => const Center(
+                        child: Icon(
+                          Icons.broken_image,
+                          size: 60,
+                          color: Colors.grey,
+                        ),
                       ),
+                ),
+              ),
             ),
 
             const SizedBox(height: 20),
