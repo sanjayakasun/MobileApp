@@ -2,10 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:fishapp/ResultScreen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
-import 'ResultScreen.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
