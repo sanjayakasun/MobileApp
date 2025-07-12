@@ -1,3 +1,4 @@
+import 'package:fishapp/FishChatBotPage.dart';
 import 'package:flutter/material.dart';
 
 class ResultScreen extends StatelessWidget {
@@ -141,7 +142,17 @@ class ResultScreen extends StatelessWidget {
                   ),
                 ),
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => FishChatBotPage(
+                              speciesName: speciesName,
+                            ), // pass actual species
+                      ),
+                    );
+                  },
                   icon: Icon(Icons.chat_bubble, color: primaryColor),
                   label: Text('Try GPT', style: TextStyle(color: primaryColor)),
                 ),
