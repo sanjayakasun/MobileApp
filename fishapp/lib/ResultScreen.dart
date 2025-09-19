@@ -1,6 +1,7 @@
 import 'package:fishapp/FishChatBotPage.dart';
 import 'package:fishapp/GradCamScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:fishapp/OntologyDetailsPage.dart';
 
 class ResultScreen extends StatelessWidget {
   final String speciesName;
@@ -9,7 +10,7 @@ class ResultScreen extends StatelessWidget {
   final String heatmapimageurl;
   final String imageUrl; // Optional: if you want to show the selected image
 
-  const ResultScreen({
+  ResultScreen({
     Key? key,
     required this.speciesName,
     required this.scientificName,
@@ -18,9 +19,21 @@ class ResultScreen extends StatelessWidget {
     required this.heatmapimageurl,
   }) : super(key: key);
 
+// Mapping species names to IDs
+  final Map<String, String> speciesIdMap = {
+    "Bulath_hapaya": "Q2249852",
+    "Dankuda_pethiya": "Q28599176",
+    "Depulliya": "Q1518816",
+    "Halamal_dandiya": "Q269931",
+    "Lethiththaya": "Q637598",
+    "Pathirana_salaya": "Q2917966",
+    "Thal_kossa": "Q2703814",
+  };
+
   @override
   Widget build(BuildContext context) {
     const primaryColor = Color(0xFF001F59);
+    String? speciesId = speciesIdMap[speciesName];
 
     return Scaffold(
       appBar: AppBar(
@@ -210,7 +223,14 @@ class ResultScreen extends StatelessWidget {
                 // ),
 
                 ElevatedButton.icon(
-                  onPressed: () {},
+                  onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => OntologyDetailsPage(speciesId: speciesId, imageUrl:imageUrl ),
+                    ),
+                  );
+                },
                   icon: Icon(Icons.explore, color: primaryColor),
                   label: Text(
                     'Explore more',
