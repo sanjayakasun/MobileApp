@@ -69,7 +69,8 @@ class _HomeState extends State<Home> {
                 scientificName: '',
                 confidenceScore: jsonResp['confidence'] ?? 0.90,
                 imageUrl:
-                    "http://192.168.1.189:8000${jsonResp['heatmap_image']}",
+                    "http://192.168.1.189:8000${jsonResp['original_image']}",
+                heatmapimageurl: "http://192.168.1.189:8000${jsonResp['heatmap_image']}",
               ),
         ),
       );

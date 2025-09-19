@@ -64,31 +64,56 @@ class _FishChatBotPageState extends State<FishChatBotPage> {
               itemCount: _chat.length,
               itemBuilder: (_, i) {
                 final item = _chat[i];
-                return Align(
-                  alignment:
-                      item['isBot']
-                          ? Alignment.centerLeft
-                          : Alignment.centerRight,
-                  child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 6),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color:
-                          item['isBot']
-                              ? const Color.fromARGB(255, 243, 243, 243)
-                              : primaryColor,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      item['message'],
-                      style: TextStyle(
-                        color:
-                            item['isBot']
-                                ? const Color.fromARGB(255,0,0,0,) // Bot message text color
-                                : Colors.white, // User message text color
+                final isBot = item['isBot'];
+
+                return Row(
+                  mainAxisAlignment:
+                      isBot ? MainAxisAlignment.start : MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (isBot)
+                      Padding(
+                        padding: const EdgeInsets.only(right: 6),
+                        child: Icon(
+                          Icons.smart_toy,
+                          size: 24,
+                          color: Colors.grey,
+                        ),
+                      ),
+
+                    Flexible(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(vertical: 6),
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color:
+                              isBot
+                                  ? const Color.fromARGB(255, 243, 243, 243)
+                                  : primaryColor,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          item['message'],
+                          style: TextStyle(
+                            color:
+                                isBot
+                                    ? const Color.fromARGB(255, 0, 0, 0)
+                                    : Colors.white,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+
+                    if (!isBot)
+                      Padding(
+                        padding: const EdgeInsets.only(left: 6),
+                        child: Icon(
+                          Icons.person,
+                          size: 24,
+                          color: Colors.blueGrey,
+                        ),
+                      ),
+                  ],
                 );
               },
             ),

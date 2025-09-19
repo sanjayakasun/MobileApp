@@ -1,10 +1,12 @@
 import 'package:fishapp/FishChatBotPage.dart';
+import 'package:fishapp/GradCamScreen.dart';
 import 'package:flutter/material.dart';
 
 class ResultScreen extends StatelessWidget {
   final String speciesName;
   final String scientificName;
   final double confidenceScore;
+  final String heatmapimageurl;
   final String imageUrl; // Optional: if you want to show the selected image
 
   const ResultScreen({
@@ -13,6 +15,7 @@ class ResultScreen extends StatelessWidget {
     required this.scientificName,
     required this.confidenceScore,
     required this.imageUrl,
+    required this.heatmapimageurl,
   }) : super(key: key);
 
   @override
@@ -57,7 +60,7 @@ class ResultScreen extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: Image.network(
-                  imageUrl,
+                  heatmapimageurl,
                   fit: BoxFit.cover,
                   loadingBuilder: (context, child, loadingProgress) {
                     if (loadingProgress == null) return child;
@@ -130,6 +133,30 @@ class ResultScreen extends StatelessWidget {
               children: [
                 ElevatedButton.icon(
                   onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => GradCamScreen(
+                              originalImageUrl:
+                                  imageUrl, // send original image url
+                            ),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.question_mark_rounded, color: primaryColor),
+                  label: Text(
+                    'How ? Explain Using Grad-CAM ',
+                    style: TextStyle(color: primaryColor),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
                     Navigator.pop(context); // back to home
                   },
                   icon: Icon(Icons.refresh, color: Colors.white),
@@ -162,14 +189,26 @@ class ResultScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.explore_off, color: primaryColor),
-                  label: Text(
-                    'Grad-CAM',
-                    style: TextStyle(color: primaryColor),
-                  ),
-                ),
+                // ElevatedButton.icon(
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder:
+                //             (context) => GradCamScreen(
+                //               originalImageUrl:
+                //                   imageUrl, // send original image url
+                //             ),
+                //       ),
+                //     );
+                //   },
+                //   icon: Icon(Icons.question_mark_rounded, color: primaryColor),
+                //   label: Text(
+                //     'How ? Explain Using Grad-CAM ',
+                //     style: TextStyle(color: primaryColor),
+                //   ),
+                // ),
+
                 ElevatedButton.icon(
                   onPressed: () {},
                   icon: Icon(Icons.explore, color: primaryColor),
