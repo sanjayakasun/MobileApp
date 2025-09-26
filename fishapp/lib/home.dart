@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:fishapp/ResultScreen.dart';
+import 'package:fishapp/FishChatBotPage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
@@ -287,6 +288,20 @@ class _HomeState extends State<Home> {
           ],
         ),
       ),
+        floatingActionButton: FloatingActionButton(
+    backgroundColor: primaryColor,
+    onPressed: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => FishChatBotPage(
+            speciesName: "Some Endemic Fish Species of Sri Lanka : Bulath hapaya, Dankuda pethiya, Depulliya, Halamal dandiya, Lethiththaya, Pathirana salaya, Thal kossa"
+          ),
+        ),
+      );
+    },
+    child: const Icon(Icons.chat, color: Colors.white),
+  ),
     );
   }
 }
