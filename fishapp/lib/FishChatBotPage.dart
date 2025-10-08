@@ -38,7 +38,7 @@ class _FishChatBotPageState extends State<FishChatBotPage> {
     });
 
     try {
-      final url = Uri.parse("http://192.168.1.159:8000/chatbot/api/chat/");
+      final url = Uri.parse("http://192.168.1.135:8000/chatbot/api/chat/");
 
       final body = {
         "message": msg,

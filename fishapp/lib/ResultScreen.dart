@@ -2,6 +2,7 @@ import 'package:fishapp/FishChatBotPage.dart';
 import 'package:fishapp/GradCamScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:fishapp/OntologyDetailsPage.dart';
+import 'package:fishapp/FishValidationPage.dart';
 
 class ResultScreen extends StatelessWidget {
   final String speciesName;
@@ -19,7 +20,7 @@ class ResultScreen extends StatelessWidget {
     required this.heatmapimageurl,
   }) : super(key: key);
 
-// Mapping species names to IDs
+  // Mapping species names to IDs
   final Map<String, String> speciesIdMap = {
     "Bulath_hapaya": "Q2249852",
     "Dankuda_pethiya": "Q28599176",
@@ -159,7 +160,25 @@ class ResultScreen extends StatelessWidget {
                   },
                   icon: Icon(Icons.question_mark_rounded, color: primaryColor),
                   label: Text(
-                    'How ? Explain Using Grad-CAM ',
+                    'Validate with \n Grad-CAM',
+                    style: TextStyle(color: primaryColor),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (context) => FishValidationPage(
+                              cnnPrediction: speciesName, // pass CNN result
+                            ),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.key_rounded, color: primaryColor),
+                  label: Text(
+                    'Validate with \n Fish Key',
                     style: TextStyle(color: primaryColor),
                   ),
                 ),
@@ -221,16 +240,19 @@ class ResultScreen extends StatelessWidget {
                 //     style: TextStyle(color: primaryColor),
                 //   ),
                 // ),
-
                 ElevatedButton.icon(
                   onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => OntologyDetailsPage(speciesId: speciesId, imageUrl:imageUrl ),
-                    ),
-                  );
-                },
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => OntologyDetailsPage(
+                              speciesId: speciesId,
+                              imageUrl: imageUrl,
+                            ),
+                      ),
+                    );
+                  },
                   icon: Icon(Icons.explore, color: primaryColor),
                   label: Text(
                     'Explore more',
